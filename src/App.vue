@@ -12,8 +12,8 @@
     </div>
     <div class="border">
       <ul>
-        <li v-for="{ id, name } in todo" :key="id">
-          {{ name }} <button @click="deleteTask">Supprimer</button>
+        <li v-for="{ id, name, done } in todos" :key="id">
+          {{ id }}{{ name }} {{ done }}<button @click="deleteTask(id)">Supprimer</button>
         </li>
       </ul>
     </div>
@@ -21,32 +21,30 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, computed } from 'vue';
+// création d'une propriété réactive pour stocker l'input
 const tache = ref('');
 
+const todosData = reactive([{ id: 1, name: 'test de task', done: false }]);
+const todos = computed(() => todosData.values);
+
 function addTask() {
-  const newTask = tache;
-  let id = 0;
-  todo.push({
-    id: id++,
+  const newTask = tache.value;
+  const getId = todos.value.length + 1;
+  todos.value.push({
+    id: getId,
     name: newTask,
     done: false
   });
-  console.log(newTask);
-  // console.log('Nouvelle tâche');
+  return todos;
 }
 
-function deleteTask() {
-  confirm('Confirmer la suppression de la tâche');
+function deleteTask(id) {
+  confirm(`Confirmer suppression de la tâche ${id}`);
+  todos.value = todos.value.filter((todo) => todo.id !== id);
+  console.log('Task delete');
+  return todos;
 }
-
-const todo = reactive([
-  {
-    id: 1,
-    name: 'Ma premiere tache',
-    done: false
-  }
-]);
 </script>
 
 <style scoped></style>
